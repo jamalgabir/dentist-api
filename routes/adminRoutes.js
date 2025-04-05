@@ -3,6 +3,32 @@ const router = express.Router();
 const Appointment = require('../models/Appointment');
 const  protectAdminRoute  = require("../middleware/authMiddleware");
 
+// adminRoutes.js
+const jwt = require('jsonwebtoken');
+const Admin = require('../models/Admin');
+
+router.get('/admin/verify-token', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: 'Token not provided' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const admin = await Admin.findById(decoded.adminId);
+
+        if (!admin) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+
+        res.status(200).json({ message: 'Token is valid' });
+    } catch (error) {
+        res.status(401).json({ message: 'Invalid or expired token' });
+    }
+});
+
+
 router.get('/admin/appointments',protectAdminRoute, async (req, res) => {
     try {
         const appointments = await Appointment.find({});
