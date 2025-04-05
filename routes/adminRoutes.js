@@ -5,7 +5,7 @@ const  protectAdminRoute  = require("../middleware/authMiddleware");
 
 // adminRoutes.js
 const jwt = require('jsonwebtoken');
-const Admin = require('../models/Admin');
+const Admin = require('../models/admin');
 
 router.get('/admin/verify-token', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
