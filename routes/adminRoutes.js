@@ -60,6 +60,29 @@ router.post('/admin/appointments',protectAdminRoute, async (req, res) => {
     }
 });
 
+//Update attendence 
+
+router.put('/admin/appointments/:id/attendance',protectAdminRoute, async (req, res) => {
+    const { attended } = req.body;
+    const { id } = req.params;
+
+    try {
+        const updatedAppointment = await Appointment.findByIdAndUpdate(id, {
+
+            attended,
+        }, { new: true });
+
+        if (!updatedAppointment) {
+            return res.status(404).json({ message: 'Appointment not found' });
+        }
+
+        res.status(200).json({ message: 'attended updated successfully' });
+    } catch (error) {
+        console.error('Error updating attended:', error);
+        res.status(500).json({ message: 'Server error updating appointment' });
+    }
+});
+
 // Update an existing appointment
 router.put('/admin/appointments/:id',protectAdminRoute, async (req, res) => {
     const { patientName, email, phone, serviceType, date } = req.body;
